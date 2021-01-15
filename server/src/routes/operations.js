@@ -30,4 +30,14 @@ router.get('/operations', (req, res) => {
   })
 })
 
+router.get('/operations/:id', (req, res) => {
+  Operation.findById(req.params.id, 'value description', (err, operation) => {
+    if(err) {
+      res.status(500)
+    } else {
+      res.send(operation)
+    }
+  })
+})
+
 module.exports = router;
