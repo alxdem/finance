@@ -1,6 +1,5 @@
 <template>
   <h1>Operations</h1>
-  <el-button>Кнопка</el-button>
   <form action="" @submit.prevent="submit">
     <input type="text" id="value" name="value" placeholder="value" v-model="operation.value">
     <input type="text" id="description" name="description" placeholder="description" v-model="operation.description">
