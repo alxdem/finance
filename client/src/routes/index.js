@@ -1,16 +1,18 @@
-import OperationsPage from '@/views/OperationsPage';
-import DashboardPage from '@/views/DashboardPage';
-
 const routes = [
   {
     path: '/',
     name: 'Dashboard',
-    component: DashboardPage
+    component: () => import('../views/DashboardPage')
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login')
   },
   {
     path: '/operations',
     name: 'Operations',
-    component: OperationsPage
+    component: () => import('../views/OperationsPage')
   },
 ];
 
