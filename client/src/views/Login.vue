@@ -1,12 +1,9 @@
 <template>
   <div>
-    <el-container>
       <a href="#">fdsfsd</a>
       <form action="/">
         <Input/>
       </form>
-      <el-button>Кнопка</el-button>
-    </el-container>
 
   </div>
 </template>
