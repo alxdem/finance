@@ -17,15 +17,22 @@
       display: block;
       font-size: 14px;
       margin: 0 0 4px;
+      color: $colorGray__900;
     }
 
     &__tag {
       border: 0;
       padding: 3px 10px;
       font-size: 16px;
-      height: 36px;
-      line-height: 36px;
+      height: 40px;
+      line-height: 40px;
       border-radius: 4px;
+      color: $colorMain__900;
+
+      &::placeholder {
+        color: $colorGray__500;
+        font-weight: 300;
+      }
     }
   }
 </style>

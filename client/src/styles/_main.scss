@@ -1,5 +1,11 @@
+html {
+  min-height: 100%;
+  height: 100%;
+}
+
 body {
-  background-color: $colorSecondary;
+  min-height: 100%;
+  background-color: $colorMain__100;
   font-family: $ffMain;
   color: $colorText;
 }

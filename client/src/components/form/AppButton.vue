@@ -1,13 +1,21 @@
 <template>
-  <button v-bind:type="type" class="button">
+  <button v-bind:type="type" class="button" v-bind:class="{ button_fit: isFit }">
     {{ text }}
   </button>
 </template>
 
 <style lang="scss">
-@import './src/styles/variables';
   .button {
-    background-color: $colorSecondary;
+    background-color: $colorMain__300;
+    padding: 7px 15px;
+    min-height: 40px;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 16px;
+
+    &_fit {
+      width: 100%;
+    }
   }
 </style>
 
@@ -22,6 +30,10 @@ export default {
     type: {
       type: String,
       default: 'button'
+    },
+    isFit: {
+      type: Boolean,
+      default: false
     }
   }
 }
