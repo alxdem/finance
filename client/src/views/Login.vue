@@ -2,18 +2,38 @@
   <div>
       <a href="#">fdsfsd</a>
       <form action="/">
-        <Input/>
+        <div class="form__row">
+          <AppInput
+              text="Логин"
+              placeholder="Введите логин"
+          />
+        </div>
+        <div class="form__row">
+          <AppInput
+              text="Пароль"
+              placeholder="Введите пароль"
+              type="password"
+          />
+        </div>
+        <div class="form__row">
+          <AppButton
+            text="Войти"
+            type="submit"
+          />
+        </div>
       </form>
 
   </div>
 </template>
 <script>
-import Input from '@/components/form/Input';
+import AppInput from '@/components/form/AppInput';
+import AppButton from '@/components/form/AppButton';
 
 export default {
   name: 'login',
   components: {
-    Input
+    AppInput,
+    AppButton
   }
 }
 </script>

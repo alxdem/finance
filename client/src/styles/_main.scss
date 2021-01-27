@@ -1,4 +1,13 @@
 body {
   background-color: $colorSecondary;
   font-family: $ffMain;
+  color: $colorText;
+}
+
+.form {
+  &__row {
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+  }
 }
