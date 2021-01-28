@@ -1,9 +1,48 @@
 <template>
-  <router-link to="/">Dashboard</router-link>
-  <router-link to="/operations">Operations</router-link>
+  <div class="main-layout">
+    <div class="main-layout__sidebar">
+      <Sidebar/>
+    </div>
+    <div class="main-layout__wrapper">
+      <div class="main-layout__header">
+        <Header/>
+      </div>
+
+      <router-view />
+    </div>
+  </div>
 </template>
+<style lang="scss">
+  .main-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: $colorGray__200;
+
+    &__sidebar {
+      width: 300px;
+      position: relative;
+      z-index: 2;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px 2px rgba($colorGray__600, 0.13);
+    }
+
+    &__wrapper {
+      flex-grow: 1;
+    }
+
+    &__header {
+      height: $headerHeight;
+    }
+  }
+</style>
 <script>
+import Sidebar from '@/components/Sidebar';
+import Header from '@/components/Header';
 export default {
-  name: 'main-layout'
+  name: 'main-layout',
+  components: {
+    Sidebar,
+    Header
+  }
 }
 </script>

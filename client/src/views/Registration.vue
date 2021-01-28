@@ -23,7 +23,7 @@
           />
         </div>
         <div class="form__row login-page__link">
-          <router-link to="/registration">Регистрация</router-link>
+          <router-link to="/login">Вход</router-link>
         </div>
       </form>
     </div>
@@ -49,10 +49,6 @@
     &__form {
       width: 260px;
     }
-
-    &__link {
-      text-align: center;
-    }
   }
 </style>
 
@@ -61,7 +57,7 @@ import AppInput from '@/components/form/AppInput';
 import AppButton from '@/components/form/AppButton';
 
 export default {
-  name: 'login',
+  name: 'registration',
   components: {
     AppInput,
     AppButton

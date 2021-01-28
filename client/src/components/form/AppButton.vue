@@ -6,11 +6,11 @@
 
 <style lang="scss">
   .button {
-    background-color: $colorMain__300;
+    background-color: $colorGray__200;
     padding: 7px 15px;
     min-height: 40px;
     text-align: center;
-    border-radius: 4px;
+    border-radius: 2px;
     font-size: 16px;
 
     &_fit {

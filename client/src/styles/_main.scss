@@ -5,9 +5,17 @@ html {
 
 body {
   min-height: 100%;
-  background-color: $colorMain__100;
+  background-color: $colorGray__100;
   font-family: $ffMain;
   color: $colorText;
+}
+
+a {
+  color: $colorMain__700;
+
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 .form {

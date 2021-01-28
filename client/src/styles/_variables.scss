@@ -1,17 +1,23 @@
 $colorWhite: #ffffff;
 $colorBlack: #000000;
 
-$colorMain__100: #E1F5FE;
+$colorMain__100: #EFF9FE;
+$colorMain__200: #E1F5FE;
 $colorMain__300: #B3E5FC;
 $colorMain__500: #03A9F4;
 $colorMain__700: #0288D1;
 $colorMain__900: #01579B;
 
 
-$colorGray__300: #E0E0E0;
-$colorGray__500: #9E9E9E;
-$colorGray__700: #616161;
-$colorGray__900: #424242;
+$colorGray__100: #EFF4FD;
+$colorGray__200: #DFE4ED;
+$colorGray__300: #BFC4CD;
+$colorGray__400: #9FA4AD;
+$colorGray__500: #7F848D;
+$colorGray__600: #5F646D;
+$colorGray__700: #3F444D;
+$colorGray__800: #1F242D;
+$colorGray__900: #0F141D;
 
 $colorSecondary:  #E3F2FD;
 
@@ -19,3 +25,5 @@ $colorSecondary:  #E3F2FD;
 $colorText: #263238;
 
 $ffMain: 'Roboto', 'Arial', serif;
+
+$headerHeight: 70px;
