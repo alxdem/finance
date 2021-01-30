@@ -10,6 +10,9 @@
 
       <router-view />
     </div>
+    <Modal
+        v-if="isModalShow"
+    />
   </div>
 </template>
 <style lang="scss">
@@ -38,11 +41,24 @@
 <script>
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
+import Modal from "@/components/Modal";
+
 export default {
   name: 'main-layout',
   components: {
     Sidebar,
-    Header
+    Header,
+    Modal
+  },
+  data() {
+    return {
+      // isModalShow: this.$store.state.isModalShow
+    }
+  },
+  computed: {
+    isModalShow() {
+      return this.$store.state.isModalShow;
+    }
   }
 }
 </script>
