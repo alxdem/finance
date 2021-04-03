@@ -12,7 +12,13 @@
     </div>
     <Modal
         v-if="isModalShow"
-    />
+        :title="this.$store.state.modalTitle"
+    >
+      <template v-slot:header>
+        <h1>Здесь мог быть заголовок страницы</h1>
+      </template>
+        <component v-bind:is="this.$store.state.modalCurrentComponent"></component>
+    </Modal>
   </div>
 </template>
 <style lang="scss">
@@ -42,16 +48,19 @@
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import Modal from "@/components/Modal";
+import FormOperation from '@/components/form/FormOperation';
 
 export default {
   name: 'main-layout',
   components: {
     Sidebar,
     Header,
-    Modal
+    Modal,
+    FormOperation
   },
   data() {
     return {
+      name: 'FormOperation'
       // isModalShow: this.$store.state.isModalShow
     }
   },
