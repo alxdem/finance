@@ -7,17 +7,21 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if(to.matched.some(record => record.meta.auth)) {
+  if(to.matched.some(record => {
+    console.log('record', record)
+    return record.meta.auth;
+  })) {
+
     if(localStorage.getItem('jwt') == null) {
-      console.log('localStorage.getItem(\'jwt\')', localStorage.getItem('jwt'))
+      console.log('to.fullPath', to.fullPath)
       next({
         path: '/login',
         params: { nextUrl: to.fullPath }
       })
     }
-    console.log('to', to);
-    console.log('from', from);
-    console.log('next', next);
+    // console.log('to', to);
+    // console.log('from', from);
+    // console.log('next', next);
     // console.log('auth.loggedIn()', auth.loggedIn());
     // console.log('record', record);
   }
