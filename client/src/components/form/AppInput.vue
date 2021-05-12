@@ -2,9 +2,12 @@
   <label class="input">
     <span v-if="text" class="input__text">{{ text }}</span>
     <input
-        v-bind:type="type"
+        :type="type"
+        :name="name"
         class="input__tag"
-        v-bind:placeholder="placeholder"
+        :placeholder="placeholder"
+        :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
     >
   </label>
 </template>
@@ -46,20 +49,17 @@
 
 <script>
 export default {
-  name: 'app-input',
+  name: 'AppInput',
   props: {
-    text: {
-     type: String,
-     default: null
-    },
-    placeholder: {
-     type: String,
-     default: null
-    },
+    text: String,
+    placeholder: String,
     type: {
       type: String,
       default: 'text'
-    }
-  }
+    },
+    name: String,
+    modelValue: String
+  },
+  emits: ['update:modelValue']
 }
 </script>

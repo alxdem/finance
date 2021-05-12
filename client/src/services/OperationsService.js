@@ -1,10 +1,11 @@
-import api from '@/services/api';
+import Api from '@/services/api';
+const ApiClass = new Api();
 
 export default {
   fetchOperations() {
-    return api().get('operations') // Умеет склеивать адрес, получим: http://localhost:8081/operations
+    return ApiClass.axiosCreate().get('/api/operations') // Умеет склеивать адрес, получим: http://localhost:8081/operations
   },
   addNewOperation(params) {
-    return api().post('operations', params);
+    return ApiClass.axiosCreate().post('/api/operations', params);
   }
 }

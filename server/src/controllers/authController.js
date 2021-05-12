@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
-const { jwtSecret } = require('../config/config');
+const { secret } = require('../config/config').jwt;
 const User = require('../models/user');
 
 const generateAccessToken = (id) => {
@@ -9,7 +9,7 @@ const generateAccessToken = (id) => {
     id
   };
 
-  return jwt.sign(payload, jwtSecret, {expiresIn: '2h'});
+  return jwt.sign(payload, secret, {expiresIn: '2h'});
 };
 
 class AuthController {
@@ -20,15 +20,15 @@ class AuthController {
           return res.status(400).json({message: 'Ошибка при регистрации', errors});
       }
 
-      const {email, password} = req.body;
-      const candidate = await User.findOne({email});
+      const {login, password} = req.body;
+      const candidate = await User.findOne({email: login});
       if(candidate) {
         return res.status(400).json({message: 'Email уже зарегистрирован'})
       }
 
       const hashPassword = bcrypt.hashSync(password, 7);
       const user = new User({
-        email,
+        email: login,
         password: hashPassword
       });
 
@@ -44,12 +44,14 @@ class AuthController {
 
   async login(req, res) {
     try {
-      const { email, password } = req.body;
-      const user = await User.findOne({email});
+      const { login, password } = req.body;
+      const user = await User.findOne({email: login});
+
       if(!user) {
-        return res.status(400).json({message: `Пользователь ${email} не найден`});
+        return res.status(400).json({message: `Пользователь ${login} не найден`});
       }
       const validPassword = bcrypt.compareSync(password, user.password);
+
       if(!validPassword) {
         return res.status(400).json({message: `Введен неверный пароль`});
       }
