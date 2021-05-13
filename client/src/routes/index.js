@@ -29,7 +29,7 @@ const routes = [
     name: 'Operations',
     meta: {
       layout: 'MainLayout',
-      auth: true
+      auth: false
     },
     component: () => import('../views/OperationsPage')
   },
