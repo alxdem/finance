@@ -53,9 +53,8 @@ export default {
   methods: {
     async submit() {
       const res = await this.api.login(this.login, this.password);
-      console.log('res', res);
 
-      localStorage.setItem('token', res.token);
+      localStorage.setItem('token', res.accessToken);
     }
   }
 }

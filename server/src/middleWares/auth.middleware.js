@@ -5,32 +5,26 @@ module.exports = function (req, res, next) {
   const authHeader = req.get('Authorization');
   if(!authHeader) {
     res.status(401).json({ message: 'Токен не получен' });
+    return;
   }
 
   const token = req.headers.authorization.split(' ')[1];
   try {
-    jwt.verify(token, secret);
+    const payload = jwt.verify(token, secret);
+    if(payload.type !== 'access') {
+      res.status(401).json({message: 'Неверный токен'});
+      return;
+    }
   } catch (e) {
+    if (e instanceof jwt.TokenExpiredError) {
+      res.status(401).json({ message: 'Токен истек' });
+      return;
+    }
     if(e instanceof jwt.JsonWebTokenError) {
       res.status(401).json({ message: 'Неверный токен' });
+      return;
     }
   }
 
   next();
-
-  // if(req.method === 'OPTIONS') {
-  //   next()
-  // }
-  //
-  // try {
-  //   const token = req.headers.authorization.split(' ')[1];
-  //   if(!token) {
-  //     return res.status(403).json({message: 'Пользователь не авторизован'});
-  //   }
-  //   const decodedData = jwt.verify(token, secret);
-  //   req.user = decodedData;
-  //   next();
-  // } catch (e) {
-  //   return res.status(403).json({message: 'Пользователь не авторизован'});
-  // }
 };

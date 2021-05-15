@@ -41,11 +41,10 @@ export default class Api {
   }
 
   async login(login, password) {
-    console.log('login', login);
     const { data } = await this.client.post('/auth/login', {login, password});
-    console.log('data', data);
+    console.log('data', data)
 
-    this.token = data.token;
+    this.token = data.accessToken;
     this.refreshToken = data.refreshToken;
 
     return data;

@@ -2,7 +2,22 @@ const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const { secret } = require('../config/config').jwt;
+const authHelper = require('../helpers/authHelper');
+
 const User = require('../models/user');
+const Token = require('../models/token');
+
+const updateTokens = (userId) => {
+  const accessToken = authHelper.generateAccessToken(userId);
+  const refreshToken = authHelper.generateRefreshToken();
+
+  return authHelper.replaceDbRefreshToken(refreshToken.id, userId)
+    .then(() => ({
+      accessToken,
+      refreshToken: refreshToken.token,
+      userId
+    }));
+};
 
 const login = (req, res) => {
   const { login, password } = req.body;
@@ -15,9 +30,7 @@ const login = (req, res) => {
 
       const isValid = bcrypt.compareSync(password, user.password);
       if(isValid) {
-        const token = jwt.sign(user._id.toString(), secret);
-        res.json({ token });
-        return token;
+        updateTokens(user._id).then(tokens => res.json(tokens));
       } else {
         res.status(401).json({message: 'Неверный пароль'})
       }
@@ -25,8 +38,41 @@ const login = (req, res) => {
     .catch(err => res.status(500).json({message: err.message}))
 };
 
+const refreshTokens = (req, res) => {
+  const { refreshToken } = req.body;
+  let payload;
+  try {
+    payload = jwt.verify(refreshToken, secret);
+    if(payload.type !== 'refresh') {
+      res.status(400).json({message: 'Неверный токен'});
+      return;
+    }
+  } catch (e) {
+    if(e instanceof jwt.TokenExpiredError) {
+      res.status(400).json({message: 'Токен истек!'});
+      return;
+    } else if (e instanceof jwt.JsonWebTokenError) {
+      res.status(400).json({message: 'Неверный токен'});
+      return;
+    }
+  }
+
+  Token.findOne({ tokenId: payload.id })
+    .exec()
+    .then((token) => {
+      if (token === null) {
+        throw new Error('Неверный токен!')
+      }
+
+      return updateTokens(token.userId);
+    })
+    .then(tokens => res.json(tokens))
+    .catch(err => res.status(400).json({message: err.message}));
+};
+
 module.exports = {
-  login
+  login,
+  refreshTokens
 };
 
 // class AuthController {

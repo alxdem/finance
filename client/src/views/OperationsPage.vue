@@ -33,10 +33,14 @@ export default {
       }
     }
   },
+  created() {
+    this.getOperations();
+  },
   methods: {
     async getOperations() {
       const response = await OperationsService.fetchOperations();
-      this.operations = response.data.operations;
+      console.log('response', response)
+      this.operations = response.data;
     },
     async submit() {
       if(this.operation.value !== '' && this.operation.description !== '') {
@@ -49,9 +53,6 @@ export default {
         console.log('Поля пустые')
       }
     }
-  },
-  mounted() {
-    this.getOperations();
   }
 }
 </script>
