@@ -55,6 +55,7 @@ export default {
       const res = await this.api.login(this.login, this.password);
 
       localStorage.setItem('token', res.accessToken);
+      localStorage.setItem('userId', res.userId);
     }
   }
 }

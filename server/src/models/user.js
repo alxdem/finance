@@ -11,9 +11,12 @@ const UserSchema = new Schema({
     required: true
   },
   operations: [{
-    type: Types.ObjectId,
-    ref: 'Operations'
-  }]
+    type: Array,
+  }],
+  // operations: [{
+  //   type: Types.ObjectId,
+  //   ref: 'Operations'
+  // }]
 })
 
-module.exports = model('User', UserSchema);
+module.exports = model('users', UserSchema);

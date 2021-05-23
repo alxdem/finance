@@ -1,7 +1,8 @@
 const OperationModel = require('../models/operation');
 
 const getAll = (req, res) => {
-  OperationModel.find()
+  console.log('--------', req.headers.userid);
+  OperationModel.find({userid: req.headers.userid})
     .exec() // Чтобы превратить результат в промис
     .then(operations => res.json(operations))
     .catch(err => res.status(500).json(err));

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const OperationSchema = new mongoose.Schema({
-  id: Number,
+  userid: String,
   value: Number,
   description: String
 })

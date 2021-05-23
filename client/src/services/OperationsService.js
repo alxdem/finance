@@ -4,7 +4,8 @@ const ApiClass = new Api();
 export default {
   config: {
     headers: {
-      Authorization: 'Bearer ' + localStorage.getItem('token')
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+      userId: localStorage.getItem('userId')
     }
   },
 
@@ -14,6 +15,6 @@ export default {
     return res;
   },
   addNewOperation(params) {
-    return ApiClass.axiosCreate().post('/operations', this.config, params);
+    return ApiClass.axiosCreate().post('/operations', params, this.config);
   }
 }

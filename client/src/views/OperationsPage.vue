@@ -28,23 +28,28 @@ export default {
     return {
       operations: [],
       operation: {
+        userId: null,
         value: '',
         description: ''
       }
     }
   },
   created() {
-    this.getOperations();
+    this.getOperations().then((res) => {
+      console.log('res', res)
+      this.operations = res.data;
+    });
+
   },
   methods: {
     async getOperations() {
-      const response = await OperationsService.fetchOperations();
-      console.log('response', response)
-      this.operations = response.data;
+      return await OperationsService.fetchOperations();
     },
     async submit() {
+      this.operation.userId = localStorage.getItem('userId');
       if(this.operation.value !== '' && this.operation.description !== '') {
         await OperationsService.addNewOperation({
+          userid: this.operation.userId,
           value: this.operation.value,
           description: this.operation.description
         })
