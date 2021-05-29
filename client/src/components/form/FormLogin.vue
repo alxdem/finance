@@ -1,14 +1,14 @@
 <template>
   <form class="login-page__form" action="/" @submit.prevent="submit">
     <div class="form__row">
-      <AppInput
+      <AppField
           text="Логин"
           placeholder="Введите логин"
           v-model="login"
       />
     </div>
     <div class="form__row">
-      <AppInput
+      <AppField
           text="Пароль"
           placeholder="Введите пароль"
           type="password"
@@ -33,14 +33,14 @@
 </style>
 
 <script>
-import AppInput from '@/components/form/AppInput';
+import AppField from '@/components/form/AppField';
 import AppButton from '@/components/form/AppButton';
 import Api from '@/services/api';
 
 export default {
   name: 'FormLogin',
   components: {
-    AppInput,
+    AppField,
     AppButton
   },
   data () {
@@ -52,6 +52,8 @@ export default {
   },
   methods: {
     async submit() {
+      console.log('this.login', this.login)
+
       const res = await this.api.login(this.login, this.password);
 
       localStorage.setItem('token', res.accessToken);

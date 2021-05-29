@@ -3,13 +3,13 @@
     <div class="login-page__inner">
       <form class="login-page__form" action="/">
         <div class="form__row">
-          <AppInput
+          <AppField
               text="Логин"
               placeholder="Введите логин"
           />
         </div>
         <div class="form__row">
-          <AppInput
+          <AppField
               text="Пароль"
               placeholder="Введите пароль"
               type="password"
@@ -53,13 +53,13 @@
 </style>
 
 <script>
-import AppInput from '@/components/form/AppInput';
+import AppField from '@/components/form/AppField';
 import AppButton from '@/components/form/AppButton';
 
 export default {
   name: 'registration',
   components: {
-    AppInput,
+    AppField,
     AppButton
   }
 }
