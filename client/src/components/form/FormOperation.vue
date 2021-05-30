@@ -13,7 +13,6 @@
       />
     </div>
     <div class="form__row">
-      {{operation.date}}
       <AppField
           id="date"
           type="app-date"
@@ -61,9 +60,9 @@ export default {
       operation: {
         userId: null,
         value: '',
-        date: '',
+        date: new Date(),
         description: ''
-      }
+      },
     }
   },
   methods: {

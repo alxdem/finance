@@ -10,5 +10,10 @@ const store = createStore(appStore);
 createApp(App)
   .use(store)
   .use(router)
-  .use(VCalendar, {})
+  .use(VCalendar, {
+    datePickerUpdateOnInput: true,
+    datePickerShowDayPopover: false,
+    popoverDirection: 'top',
+    popoverVisibility: 'hidden'
+  })
   .mount('#app')

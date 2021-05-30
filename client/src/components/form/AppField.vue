@@ -48,14 +48,14 @@
         :masks="dateMask"
         color="orange"
         :min-date="new Date()"
+        :popover="{ placement: 'bottom', visibility: isDatePickerShow }"
         @input="test"
-        @dayclick='test'
+        @dayclick='dayChoose'
     >
       <template v-slot="{ inputValue, inputEvents }">
         <div class="field__wrapper">
           <input
               class="field__tag"
-              :class="typeClassSet + ' ' + (this.isError ? 'field__input_error': null)"
               :placeholder="placeholder"
               :value="inputValue"
               v-on="inputEvents"
@@ -159,6 +159,11 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      isDatePickerShow: 'hover'
+    }
+  },
   computed: {
     typeClassSet() {
       return this.type ? `field__input_${this.type}`: null;
@@ -170,8 +175,7 @@ export default {
       return [
         {
           popover: {
-            visibility: 'focus',
-            hideIndicator: true,
+            visibility: 'hover',
           },
         }
       ]
@@ -179,10 +183,14 @@ export default {
   },
   emits: ['update:modelValue'],
   methods: {
-    test(day) {
-      // console.log('test', day.date.toDateString());
-      console.log('test', day);
-      this.$emit('update:modelValue', day.date)
+    dayChoose(day) {
+      this.isDatePickerShow = false;
+      const dateFormat = Date.parse(day.date);
+      setTimeout(() => {
+        this.isDatePickerShow = 'hover';
+      }, 50);
+      console.log('test', Date.parse(day.date));
+      this.$emit('update:modelValue', dateFormat)
     }
   }
 }
