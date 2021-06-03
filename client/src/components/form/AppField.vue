@@ -22,6 +22,7 @@
         :placeholder="placeholder"
         :id="id"
         :required="isRequiredSet"
+        :value="modelValue"
         @input="$emit('input', $event.target.value)"
     ></textarea>
 
@@ -36,6 +37,7 @@
         radix="."
         :required="isRequiredSet"
         :unmask="true"
+        :value="modelValue"
         :placeholder="placeholder"
         @accept="(e) => $emit('input', e)"
     />
@@ -49,7 +51,6 @@
         color="orange"
         :min-date="new Date()"
         :popover="{ placement: 'bottom', visibility: isDatePickerShow }"
-        @input="test"
         @dayclick='dayChoose'
     >
       <template v-slot="{ inputValue, inputEvents }">
