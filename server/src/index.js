@@ -12,6 +12,7 @@ const app = express();
 app.use(cors());
 require('./config/express')(app); // Подключаю и сразу вызываю с передачей app
 require('./routes/operations')(app);
+require('./routes/categories')(app);
 app.use('/auth', authRouter);
 
 mongoose.connect(config.dbURL)

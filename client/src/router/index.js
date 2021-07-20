@@ -7,10 +7,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log(to + from);
-  console.log('to.matched', to.matched.some(record => {
-      return record.meta.auth;
-    }));
+  // console.log(to + from);
+  // console.log('to.matched', to.matched.some(record => {
+  //     return record.meta.auth;
+  //   }));
 
   if(to.matched.some(record => record.meta.auth)) {
     router.push('/login');

@@ -1,4 +1,5 @@
 <template>
+  <span v-if="text" class="field__text">{{ text }}</span>
   <Multiselect
       class="app-select"
       v-model="value"
@@ -35,6 +36,7 @@ export default {
   name: 'app-select',
   components: {Multiselect},
   props: {
+    text: String,
     list: Array
   },
   data() {

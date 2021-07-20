@@ -31,7 +31,7 @@ export default {
   },
   created() {
     this.getOperations().then((res) => {
-      console.log('res', res)
+      // console.log('res', res)
       this.operations = res.data;
     });
 

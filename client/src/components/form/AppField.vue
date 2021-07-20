@@ -49,7 +49,7 @@
         :value="modelValue"
         :masks="dateMask"
         color="orange"
-        :min-date="new Date()"
+        :min-date="false"
         :popover="{ placement: 'bottom', visibility: isDatePickerShow }"
         @dayclick='dayChoose'
     >

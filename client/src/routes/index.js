@@ -33,6 +33,15 @@ const routes = [
     },
     component: () => import('../views/OperationsPage')
   },
+  {
+    path: '/categories',
+    name: 'Categories',
+    meta: {
+      layout: 'MainLayout',
+      auth: false
+    },
+    component: () => import('../views/CategoriesPage')
+  },
 ];
 
 export default routes;
