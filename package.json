@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "dependencies": {
-    "concurrently": "^6.0.2"
+    "concurrently": "^6.0.2",
+    "vue-select": "^3.11.2"
   },
   "devDependencies": {},
   "scripts": {

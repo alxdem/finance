@@ -1,15 +1,11 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const OperationSchema = new Schema({
-  value: {
-    type: Number
-  },
-  description: {
-    type: String
-  }
+const OperationSchema = new mongoose.Schema({
+  userid: String,
+  value: Number,
+  date: Number,
+  description: String
 })
 
 const OperationModel = mongoose.model('operations', OperationSchema);
-
 module.exports = OperationModel;

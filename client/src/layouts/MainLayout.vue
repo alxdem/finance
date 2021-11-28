@@ -17,7 +17,7 @@
       <template v-slot:header>
         <h1>Здесь мог быть заголовок страницы</h1>
       </template>
-        <component v-bind:is="this.$store.state.modalCurrentComponent"></component>
+      <component v-bind:is="this.$store.state.modalCurrentComponent"></component>
     </Modal>
   </div>
 </template>
@@ -49,6 +49,7 @@ import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import Modal from "@/components/Modal";
 import FormOperation from '@/components/form/FormOperation';
+import FormCategory from '@/components/form/FormCategory';
 
 export default {
   name: 'main-layout',
@@ -56,11 +57,12 @@ export default {
     Sidebar,
     Header,
     Modal,
-    FormOperation
+    FormOperation,
+    FormCategory
   },
   data() {
     return {
-      name: 'FormOperation'
+      name: 'MainLayout'
       // isModalShow: this.$store.state.isModalShow
     }
   },

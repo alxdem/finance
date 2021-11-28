@@ -1,31 +1,7 @@
 <template>
   <div class="login-page">
     <div class="login-page__inner">
-      <form class="login-page__form" action="/">
-        <div class="form__row">
-          <AppInput
-              text="Логин"
-              placeholder="Введите логин"
-          />
-        </div>
-        <div class="form__row">
-          <AppInput
-              text="Пароль"
-              placeholder="Введите пароль"
-              type="password"
-          />
-        </div>
-        <div class="form__row">
-          <AppButton
-              text="Войти"
-              type="submit"
-              isFit
-          />
-        </div>
-        <div class="form__row login-page__link">
-          <router-link to="/registration">Регистрация</router-link>
-        </div>
-      </form>
+      <FormLogin/>
     </div>
   </div>
 </template>
@@ -57,14 +33,9 @@
 </style>
 
 <script>
-import AppInput from '@/components/form/AppInput';
-import AppButton from '@/components/form/AppButton';
-
+import FormLogin from '@/components/form/FormLogin';
 export default {
-  name: 'login',
-  components: {
-    AppInput,
-    AppButton
-  }
+  name: 'loginPage',
+  components: {FormLogin}
 }
 </script>

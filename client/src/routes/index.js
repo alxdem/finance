@@ -29,9 +29,18 @@ const routes = [
     name: 'Operations',
     meta: {
       layout: 'MainLayout',
-      auth: true
+      auth: false
     },
     component: () => import('../views/OperationsPage')
+  },
+  {
+    path: '/categories',
+    name: 'Categories',
+    meta: {
+      layout: 'MainLayout',
+      auth: false
+    },
+    component: () => import('../views/CategoriesPage')
   },
 ];
 

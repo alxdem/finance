@@ -3,7 +3,8 @@ const appStore = {
     return {
       isModalShow: false,
       modalTitle: '',
-      modalCurrentComponent: ''
+      modalCurrentComponent: '',
+      categories: ''
     }
   },
   mutations: {
@@ -15,9 +16,16 @@ const appStore = {
     },
     modalComponentSet(state, name) {
       state.modalCurrentComponent = name;
+    },
+    categoriesSet(state, appArray) {
+      state.categories = appArray;
+    }
+  },
+  getters: {
+    categoriesGet: state => {
+      return JSON.parse(state.categories);
     }
   }
-
 };
 
 export default appStore;
