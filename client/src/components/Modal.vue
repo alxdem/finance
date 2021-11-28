@@ -1,15 +1,22 @@
 <template>
-  <div class="app-modal">
-    <div class="app-modal__wrapper">
-      <div class="app-modal__header">{{title}}</div>
+  <div v-if="isOpen" class="app-modal" @click="close">
+    <div class="app-modal__wrapper" @click.stop>
+      <div class="app-modal__header">
+        <div class="app-modal__title">{{title}}</div>
+        <button
+            class="app-modal__close"
+            @click="close"
+        >X</button>
+      </div>
       <div class="app-modal__body">
         <slot>kyky</slot>
       </div>
+      <div class="app-modal__footer">
+        <slot name="footer" :close="close">
+          Footer
+        </slot>
+      </div>
     </div>
-    <div
-        class="app-modal__bg"
-        @click="modalClose"
-    ></div>
   </div>
 </template>
 
@@ -24,17 +31,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
-    &__bg {
-      background-color: $colorGray__900;
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      left: 0;
-      top: 0;
-      opacity: 0.5;
-      z-index: 1;
-    }
+    background-color: rgba($colorGray__900, 0.5);
 
     &__wrapper {
       max-width: 90%;
@@ -46,13 +43,24 @@
     }
 
     &__header {
+      display: flex;
+      justify-content: space-between;
       padding: 20px;
       background-color: $colorMain__300;
       font-size: 18px;
     }
 
+    &__close {
+      margin-left: 16px;
+      padding: 4px;
+    }
+
     &__body {
       padding: 20px;
+    }
+
+    &__footer {
+      padding: 10px;
     }
   }
 </style>
@@ -61,12 +69,30 @@
 export default {
   name: 'modal',
   props: {
-    title: String
+    title: String,
+    isOpen: {
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: {
+    close: null
   },
   methods: {
-    modalClose() {
-      this.$store.commit('modalToggle', false);
+    close() {
+      this.$emit('close');
+    },
+    keyPress(e) {
+      if (this.isOpen && e.key === 'Escape') {
+        this.close();
+      }
     }
+  },
+  mounted() {
+    document.addEventListener('keydown', this.keyPress);
+  },
+  beforeUnmount() {
+    document.removeEventListener('keydown', this.keyPress);
   }
 }
 </script>

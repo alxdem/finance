@@ -65,7 +65,7 @@ export default {
     }
   },
   beforeMount() {
-    this.operationsList = this.operationsList.concat(this.$store.getters.categoriesGet);
+    // this.operationsList = this.operationsList.concat(this.$store.getters.categoriesGet);
     console.log('this.operationsList', this.operationsList);
   },
   methods: {

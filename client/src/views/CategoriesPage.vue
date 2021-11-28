@@ -40,7 +40,7 @@ export default {
   created() {
     this.getCategories().then((res) => {
       this.categories = res.data;
-      this.$store.commit('categoriesSet', JSON.stringify(res.data)); // Строка, иначе Store не понимает что меняется содержимое массива
+      // this.$store.commit('categoriesSet', JSON.stringify(res.data)); // Строка, иначе Store не понимает что меняется содержимое массива
     });
 
   },
@@ -49,9 +49,7 @@ export default {
       return await CategoriesService.fetchCategories();
     },
     addCategory() {
-      this.$store.commit('modalSetTitle', 'Создать категорию');
-      this.$store.commit('modalToggle', !this.$store.state.isModalShow);
-      this.$store.commit('modalComponentSet', 'FormCategory');
+      
     }
   }
 }

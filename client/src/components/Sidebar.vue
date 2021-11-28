@@ -118,11 +118,12 @@ export default {
   components: {
     AppButton
   },
+  emits: {
+    modalOpen: null
+  },
   methods: {
     addOperation() {
-      this.$store.commit('modalSetTitle', 'Добавить операцию');
-      this.$store.commit('modalToggle', !this.$store.state.isModalShow);
-      this.$store.commit('modalComponentSet', 'FormOperation');
+      this.$emit('modalOpen');
     }
   }
 }

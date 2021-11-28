@@ -1,7 +1,9 @@
 <template>
   <div class="main-layout">
     <div class="main-layout__sidebar">
-      <Sidebar/>
+      <Sidebar
+        @modalOpen="modalOpen"
+      />
     </div>
     <div class="main-layout__wrapper">
       <div class="main-layout__header">
@@ -11,13 +13,17 @@
       <router-view />
     </div>
     <Modal
-        v-if="isModalShow"
-        :title="this.$store.state.modalTitle"
+        :is-open="isModalShow"
+        title="Заголовок модалки"
+        @close="modalClose"
     >
-      <template v-slot:header>
-        <h1>Здесь мог быть заголовок страницы</h1>
+      <h1>Здесь мог быть заголовок страницы</h1>
+      {{confirmation}}
+      <template #footer="{ close }">
+        <input type="text" :placeholder="$options.CONFIRMATION_TEXT" v-model="confirmation">
+        &nbsp;
+        <button @click="close" type="button" :disabled="!isConfirmationCorrect">Ok</button>
       </template>
-      <component v-bind:is="this.$store.state.modalCurrentComponent"></component>
     </Modal>
   </div>
 </template>
@@ -48,8 +54,8 @@
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import Modal from "@/components/Modal";
-import FormOperation from '@/components/form/FormOperation';
-import FormCategory from '@/components/form/FormCategory';
+// import FormOperation from '@/components/form/FormOperation';
+// import FormCategory from '@/components/form/FormCategory';
 
 export default {
   name: 'main-layout',
@@ -57,18 +63,29 @@ export default {
     Sidebar,
     Header,
     Modal,
-    FormOperation,
-    FormCategory
+    // FormOperation,
+    // FormCategory
   },
   data() {
     return {
-      name: 'MainLayout'
+      name: 'MainLayout',
+      isModalShow: false,
+      confirmation: ''
       // isModalShow: this.$store.state.isModalShow
     }
   },
+  CONFIRMATION_TEXT: 'Подтверждаю',
+  methods: {
+    modalOpen() {
+      this.isModalShow = true;
+    },
+    modalClose() {
+      this.isModalShow = false;
+    }
+  },
   computed: {
-    isModalShow() {
-      return this.$store.state.isModalShow;
+    isConfirmationCorrect() {
+      return this.confirmation === this.$options.CONFIRMATION_TEXT;
     }
   }
 }
