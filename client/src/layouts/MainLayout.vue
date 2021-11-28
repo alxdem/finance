@@ -17,7 +17,7 @@
       <template v-slot:header>
         <h1>Здесь мог быть заголовок страницы</h1>
       </template>
-        <component v-bind:is="this.$store.state.modalCurrentComponent"></component>
+      <component v-bind:is="this.$store.state.modalCurrentComponent"></component>
     </Modal>
   </div>
 </template>
