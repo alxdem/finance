@@ -1,3 +1,51 @@
+<script>
+import CategoriesService from '@/services/CategoriesService';
+import Sidebar from '@/components/Sidebar';
+import Header from '@/components/Header';
+import Modal from "@/components/Modal";
+import FormOperation from '@/components/form/FormOperation';
+import FormCategory from '@/components/form/FormCategory';
+
+export default {
+  name: 'main-layout',
+  components: {
+    Sidebar,
+    Header,
+    Modal,
+    FormOperation,
+    FormCategory
+  },
+  data() {
+    return {
+      name: 'MainLayout',
+      isModalShow: false,
+      currentFormComponent: 'FormOperation', // Меняю компонент, который открываю в модалке
+      categoriesList: [], // Список категорий. Храню в верхнем компоненте, чтобы был доступ во всех дочерних
+    }
+  },
+  methods: {
+    async getCategories() {
+      return await CategoriesService.fetchCategories();
+    },
+    modalOpen(modalName) {
+      if (modalName) {
+        this.currentFormComponent = modalName;
+      }
+
+      this.isModalShow = true;
+    },
+    modalClose() {
+      this.isModalShow = false;
+    }
+  },
+  created() {
+    this.getCategories().then((res) => {
+      this.categoriesList = res.data;
+    });
+  }
+}
+</script>
+
 <template>
   <div class="main-layout">
     <div class="main-layout__sidebar">
@@ -10,20 +58,20 @@
         <Header/>
       </div>
 
-      <router-view />
+      <router-view
+          :categories="categoriesList"
+          @modalOpen="modalOpen"
+      />
     </div>
     <Modal
         :is-open="isModalShow"
         title="Заголовок модалки"
         @close="modalClose"
     >
-      <h1>Здесь мог быть заголовок страницы</h1>
-      {{confirmation}}
-      <template #footer="{ close }">
-        <input type="text" :placeholder="$options.CONFIRMATION_TEXT" v-model="confirmation">
-        &nbsp;
-        <button @click="close" type="button" :disabled="!isConfirmationCorrect">Ok</button>
-      </template>
+      <component
+          :is="currentFormComponent"
+          :categories="categoriesList"
+      ></component>
     </Modal>
   </div>
 </template>
@@ -50,43 +98,3 @@
     }
   }
 </style>
-<script>
-import Sidebar from '@/components/Sidebar';
-import Header from '@/components/Header';
-import Modal from "@/components/Modal";
-// import FormOperation from '@/components/form/FormOperation';
-// import FormCategory from '@/components/form/FormCategory';
-
-export default {
-  name: 'main-layout',
-  components: {
-    Sidebar,
-    Header,
-    Modal,
-    // FormOperation,
-    // FormCategory
-  },
-  data() {
-    return {
-      name: 'MainLayout',
-      isModalShow: false,
-      confirmation: ''
-      // isModalShow: this.$store.state.isModalShow
-    }
-  },
-  CONFIRMATION_TEXT: 'Подтверждаю',
-  methods: {
-    modalOpen() {
-      this.isModalShow = true;
-    },
-    modalClose() {
-      this.isModalShow = false;
-    }
-  },
-  computed: {
-    isConfirmationCorrect() {
-      return this.confirmation === this.$options.CONFIRMATION_TEXT;
-    }
-  }
-}
-</script>

@@ -47,7 +47,7 @@
 </style>
 
 <script>
-// import OperationsService from '@/services/OperationsService';
+import OperationsService from '@/services/OperationsService';
 import AppField from '@/components/form/AppField';
 import AppButton from "@/components/form/AppButton";
 import AppSelect from "@/components/form/AppSelect";
@@ -83,14 +83,14 @@ export default {
   },
   methods: {
     async submit() {
-      // this.operation.userId = localStorage.getItem('userId');
-      // const res = await OperationsService.addNewOperation({
-      //   userid: this.operation.userId,
-      //   value: this.operation.value,
-      //    date: this.operation.date,
-      //   description: this.operation.description
-      // })
-      // console.log(res);
+      this.operation.userId = localStorage.getItem('userId');
+      const res = await OperationsService.addNewOperation({
+        userid: this.operation.userId,
+        value: this.operation.value,
+         date: this.operation.date,
+        description: this.operation.description
+      })
+      console.log(res);
       console.log(this.operation);
     }
   }

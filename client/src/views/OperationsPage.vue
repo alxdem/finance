@@ -1,11 +1,7 @@
 <template>
   <h1>Operations</h1>
   <section class="list" v-if="operations && operations.length">
-    <ul>
-      <li v-for="(operation, index) in operations" v-bind:key="index">
-        <span>{{ operation }}</span>
-      </li>
-    </ul>
+    <operations-table :list="operations"/>
   </section>
 
   <section class="list" v-else>
@@ -16,9 +12,13 @@
 
 <script>
 import OperationsService from '@/services/OperationsService';
+import OperationsTable from '@/components/OperationsTable';
 
 export default {
   name: 'Operations',
+  components: {
+    OperationsTable
+  },
   data() {
     return {
       operations: [],
@@ -30,10 +30,11 @@ export default {
     }
   },
   created() {
-    this.getOperations().then((res) => {
-      // console.log('res', res)
-      this.operations = res.data;
-    });
+    this.getOperations()
+        .then((res) => {
+          this.operations = res.data;
+          console.log(this.operations)
+        });
 
   },
   methods: {

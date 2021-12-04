@@ -1,3 +1,35 @@
+<script>
+export default {
+  name: 'modal',
+  props: {
+    title: String,
+    isOpen: {
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: {
+    close: null
+  },
+  methods: {
+    close() {
+      this.$emit('close');
+    },
+    keyPress(e) {
+      if (this.isOpen && e.key === 'Escape') {
+        this.close();
+      }
+    }
+  },
+  mounted() {
+    document.addEventListener('keydown', this.keyPress);
+  },
+  beforeUnmount() {
+    document.removeEventListener('keydown', this.keyPress);
+  }
+}
+</script>
+
 <template>
   <div v-if="isOpen" class="app-modal" @click="close">
     <div class="app-modal__wrapper" @click.stop>
@@ -64,35 +96,3 @@
     }
   }
 </style>
-
-<script>
-export default {
-  name: 'modal',
-  props: {
-    title: String,
-    isOpen: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: {
-    close: null
-  },
-  methods: {
-    close() {
-      this.$emit('close');
-    },
-    keyPress(e) {
-      if (this.isOpen && e.key === 'Escape') {
-        this.close();
-      }
-    }
-  },
-  mounted() {
-    document.addEventListener('keydown', this.keyPress);
-  },
-  beforeUnmount() {
-    document.removeEventListener('keydown', this.keyPress);
-  }
-}
-</script>

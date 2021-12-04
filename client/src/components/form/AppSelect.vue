@@ -1,3 +1,32 @@
+<script>
+import Multiselect from '@vueform/multiselect';
+
+export default {
+  name: 'app-select',
+  components: {Multiselect},
+  props: {
+    text: String,
+    list: Array
+  },
+  data() {
+    return {
+      value: null,
+      items: []
+    }
+  },
+  beforeMount() {
+    this.items = this.list.forEach(item => {
+      const elem = {
+        title: item.name,
+        value: item._id,
+      };
+
+      return elem;
+    });
+  }
+}
+</script>
+
 <template>
   <span v-if="text" class="field__text">{{ text }}</span>
   <Multiselect
@@ -28,21 +57,3 @@
     }
   }
 </style>
-
-<script>
-import Multiselect from '@vueform/multiselect';
-
-export default {
-  name: 'app-select',
-  components: {Multiselect},
-  props: {
-    text: String,
-    list: Array
-  },
-  data() {
-    return {
-      value: null
-    }
-  }
-}
-</script>

@@ -1,3 +1,83 @@
+<script>
+import CategoriesService from '@/services/CategoriesService';
+import AppField from '@/components/form/AppField';
+import AppButton from '@/components/form/AppButton';
+import AppSelect from '@/components/form/AppSelect';
+import RadioSwitch from '@/components/form/RadioSwitch';
+
+export default {
+  name: 'form-category',
+  components: {
+    AppButton,
+    AppField,
+    AppSelect,
+    RadioSwitch
+  },
+  props: {
+    text: {
+      type: String,
+      default: null
+    },
+    categories: Array
+  },
+  CATEGORY_TYPE_LIST: [
+    {
+      title: 'Расходная',
+      value: 0
+    },
+    {
+      title: 'Доходная',
+      value: 1
+    }
+  ],
+  data() {
+    return {
+      userId: null,
+      name: '',
+      operationType: 0,
+      parent: null,
+      categoriesList: [],
+    }
+  },
+  watch: {
+    categories: {
+      deep: true,
+      handler() {
+        console.log('5', this.categories);
+      }
+    }
+  },
+  beforeMount() {
+    // this.categoriesList = this.categoriesList.concat(this.$store.getters.categoriesGet);
+    this.categoriesList = this.categories.forEach(item => {
+      const elem = {
+        title: item.name,
+        value: item._id,
+      };
+
+      return elem;
+    });
+
+    console.log('beforeMount', this.categories);
+  },
+  methods: {
+    categoryTypeChange(value) {
+      this.operationType = value ? value : 0;
+    },
+    async submit() {
+      this.userId = localStorage.getItem('userId');
+      const res = await CategoriesService.addNewCategory({
+        userid: this.userId,
+        name: this.name,
+        operationType: this.operationType,
+        isParent: !this.parent
+      })
+      console.log(res);
+    },
+  }
+}
+</script>
+
 <template>
   <form
       class="form-category form"
@@ -9,15 +89,23 @@
           id="value"
           type="text"
           text="Название"
-          v-model="category.value"
+          v-model="name"
+      />
+    </div>
+    <div class="form__row">
+      <AppSelect
+          text="Подкатегория для"
+          :list="categoriesList"
+          v-model="operationType"
       />
     </div>
 
     <div class="form__row">
-      <AppSelect
-          text="Подкатегория для"
-          :list="this.operationsList"
-          v-model="category.operationType"
+      <radio-switch
+          :items="$options.CATEGORY_TYPE_LIST"
+          name="category-type"
+          v-model="operationType"
+          @change="categoryTypeChange"
       />
     </div>
 
@@ -31,55 +119,3 @@
 <style lang="scss">
 
 </style>
-
-<script>
-import CategoriesService from '@/services/CategoriesService';
-import AppField from '@/components/form/AppField';
-import AppButton from "@/components/form/AppButton";
-import AppSelect from "@/components/form/AppSelect";
-
-export default {
-  name: 'form-category',
-  components: {
-    AppButton,
-    AppField,
-    AppSelect
-  },
-  props: {
-    text: {
-      type: String,
-      default: null
-    }
-  },
-  data() {
-    return {
-      category: {
-        userId: null,
-        value: '',
-        operationType: 0,
-        parent: null
-      },
-      operationsList: [
-        {value: 0, label: '-', active: true},
-      ]
-    }
-  },
-  beforeMount() {
-    // this.operationsList = this.operationsList.concat(this.$store.getters.categoriesGet);
-    console.log('this.operationsList', this.operationsList);
-  },
-  methods: {
-    async submit() {
-      this.category.userId = localStorage.getItem('userId');
-      const res = await CategoriesService.addNewCategory({
-        userid: this.category.userId,
-        name: this.category.value,
-        operationType: this.category.operationType,
-        isParent: !this.parent
-      })
-      console.log(res);
-      console.log(this.category);
-    },
-  }
-}
-</script>

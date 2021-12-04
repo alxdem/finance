@@ -14,6 +14,7 @@ export default {
     return res;
   },
   addNewCategory(params) {
+    console.log('---', params)
     return ApiClass.axiosCreate().post('/categories', params, this.config);
   }
 }
