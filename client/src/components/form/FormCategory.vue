@@ -48,17 +48,16 @@ export default {
     }
   },
   beforeMount() {
-    // this.categoriesList = this.categoriesList.concat(this.$store.getters.categoriesGet);
-    this.categoriesList = this.categories.forEach(item => {
+    const arr = [];
+    Array.from(this.categories).forEach(item => {
       const elem = {
-        title: item.name,
+        label: item.name,
         value: item._id,
       };
-
-      return elem;
+      arr.push(elem);
     });
 
-    console.log('beforeMount', this.categories);
+    this.categoriesList = Array.from(arr);
   },
   methods: {
     categoryTypeChange(value) {
