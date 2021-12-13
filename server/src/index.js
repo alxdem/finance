@@ -14,6 +14,7 @@ require('./config/express')(app); // Подключаю и сразу вызыв
 require('./routes/operations')(app);
 require('./routes/categories')(app);
 app.use('/auth', authRouter);
+mongoose.set('useFindAndModify', false); // Чтобы не выдавало ошибку
 
 mongoose.connect(config.dbURL)
   .then(() => app.listen(

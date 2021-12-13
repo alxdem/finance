@@ -1,3 +1,79 @@
+<script>
+import { IMaskComponent } from 'vue-imask';
+
+export default {
+  name: 'AppField',
+  components: {
+    'imask-input': IMaskComponent
+  },
+  props: {
+    text: String,
+    id: String,
+    error: {
+      type: [String, Boolean],
+      default: false
+    },
+    isError: {
+      default: false,
+      type: Boolean
+    },
+    placeholder: String,
+    type: {
+      type: String,
+      default: 'text'
+    },
+    name: String,
+    modelValue: [String, Object, Number],
+    mask: {
+      type: String,
+      default: ''
+    },
+    dateMask: {
+      type: Object,
+      default: function () {
+        return {
+          input: 'DD.MM.YYYY',
+        }
+      }
+    }
+  },
+  data() {
+    return {
+      isDatePickerShow: 'hover'
+    }
+  },
+  computed: {
+    typeClassSet() {
+      return this.type ? `field__input_${this.type}`: null;
+    },
+    isRequiredSet() {
+      return this.error ? 'required' : null;
+    },
+    attributes() {
+      return [
+        {
+          popover: {
+            visibility: 'hover',
+          },
+        }
+      ]
+    }
+  },
+  emits: ['update:modelValue'],
+  methods: {
+    dayChoose(day) {
+      this.isDatePickerShow = false;
+      const dateFormat = Date.parse(day.date);
+      setTimeout(() => {
+        this.isDatePickerShow = 'hover';
+      }, 50);
+      console.log('test', Date.parse(day.date));
+      this.$emit('update:modelValue', dateFormat)
+    }
+  }
+}
+</script>
+
 <template>
   <label class="field">
     <span v-if="text" class="field__text">{{ text }}</span>
@@ -120,79 +196,3 @@
     }
   }
 </style>
-
-<script>
-import { IMaskComponent } from 'vue-imask';
-
-export default {
-  name: 'AppField',
-  components: {
-    'imask-input': IMaskComponent
-  },
-  props: {
-    text: String,
-    id: String,
-    error: {
-      type: [String, Boolean],
-      default: false
-    },
-    isError: {
-      default: false,
-      type: Boolean
-    },
-    placeholder: String,
-    type: {
-      type: String,
-      default: 'text'
-    },
-    name: String,
-    modelValue: [String, Object, Number],
-    mask: {
-      type: String,
-      default: ''
-    },
-    dateMask: {
-      type: Object,
-      default: function () {
-        return {
-          input: 'DD.MM.YYYY',
-        }
-      }
-    }
-  },
-  data() {
-    return {
-      isDatePickerShow: 'hover'
-    }
-  },
-  computed: {
-    typeClassSet() {
-      return this.type ? `field__input_${this.type}`: null;
-    },
-    isRequiredSet() {
-      return this.error ? 'required' : null;
-    },
-    attributes() {
-      return [
-        {
-          popover: {
-            visibility: 'hover',
-          },
-        }
-      ]
-    }
-  },
-  emits: ['update:modelValue'],
-  methods: {
-    dayChoose(day) {
-      this.isDatePickerShow = false;
-      const dateFormat = Date.parse(day.date);
-      setTimeout(() => {
-        this.isDatePickerShow = 'hover';
-      }, 50);
-      console.log('test', Date.parse(day.date));
-      this.$emit('update:modelValue', dateFormat)
-    }
-  }
-}
-</script>

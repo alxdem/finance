@@ -10,7 +10,9 @@ export default {
     categories: Array
   },
   emits: {
-    modalOpen: null
+    modalOpen: null,
+    removeCategory: null,
+    editCategory: null,
   },
   data() {
     return {
@@ -24,6 +26,12 @@ export default {
   methods: {
     modalOpen(modalName) {
       this.$emit('modalOpen', modalName);
+    },
+    removeCategory(id) {
+      this.$emit('removeCategory', id);
+    },
+    editCategory(params) {
+      this.$emit('editCategory', params);
     }
   },
 }
@@ -35,6 +43,8 @@ export default {
     <categories-list
         :list="categories"
         @modalOpen="modalOpen"
+        @removeCategory="removeCategory"
+        @editCategory="editCategory"
     />
   </section>
 </template>

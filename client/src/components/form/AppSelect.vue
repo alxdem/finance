@@ -4,28 +4,48 @@ import Multiselect from '@vueform/multiselect';
 export default {
   name: 'app-select',
   components: {Multiselect},
+  inheritAttrs: false,
   props: {
     text: String,
-    list: Array
+    list: Array,
+    modelValue: {
+      type: [String, Object],
+      default: null
+    },
+  },
+  emits: {
+    update: null,
   },
   data() {
     return {
-      value: null,
+      localValue: null,
     }
   },
+  methods: {
+    change(e) {
+      this.$emit('update', e)
+    }
+  },
+  watch: {
+    modelValue() {
+      console.log('ch')
+      this.localValue = this.modelValue;
+    }
+  }
 }
 </script>
 
 <template>
   <span v-if="text" class="field__text">{{ text }}</span>
-
+{{localValue}}
   <Multiselect
       class="app-select"
-      v-model="value"
+      v-model="localValue"
       :options="list"
       :clear-on-select="false"
       :searchable="false"
       :allow-empty="false"
+      @input="(e) => change(e)"
   />
 </template>
 

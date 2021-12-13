@@ -20,12 +20,16 @@ export default {
       name: 'MainLayout',
       isModalShow: false,
       currentFormComponent: 'FormOperation', // Меняю компонент, который открываю в модалке
-      categoriesList: [], // Список категорий. Храню в верхнем компоненте, чтобы был доступ во всех дочерних
+      categoriesList: [], // Список категорий. Храню в верхнем компоненте, чтобы был доступ во всех дочерних,
+      modalParams: {}, // Прокидываю параметры для каждой модалки (форм)
     }
   },
   methods: {
     async getCategories() {
       return await CategoriesService.fetchCategories();
+    },
+    async removeCategory(id) {
+      return await CategoriesService.removeCategory(id);
     },
     modalOpen(modalName) {
       if (modalName) {
@@ -36,6 +40,23 @@ export default {
     },
     modalClose() {
       this.isModalShow = false;
+      this.modalParams = {};
+    },
+    categoryRemove(id) {
+      this.removeCategory(id)
+          .then(res => {
+            this.getCategories().then((res) => {
+              this.categoriesList = res.data;
+            });
+            console.log('--', res);
+          });
+    },
+    categoryEdit(info) {
+      if (info.modalName && info.params) {
+        this.currentFormComponent = info.modalName;
+        this.modalParams = info.params;
+        this.isModalShow = true;
+      }
     }
   },
   created() {
@@ -61,6 +82,8 @@ export default {
       <router-view
           :categories="categoriesList"
           @modalOpen="modalOpen"
+          @removeCategory="categoryRemove"
+          @editCategory="categoryEdit"
       />
     </div>
     <Modal
@@ -71,10 +94,12 @@ export default {
       <component
           :is="currentFormComponent"
           :categories="categoriesList"
+          :params="modalParams"
       ></component>
     </Modal>
   </div>
 </template>
+
 <style lang="scss">
   .main-layout {
     display: flex;
