@@ -36,7 +36,8 @@ export default {
       userId: null,
       name: '',
       operationType: false,
-      parent: {a:1, b:2},
+      parent: '',
+      parentOld: null, // Для сохранения предыдущей категории
       categoriesList: [],
     }
   },
@@ -60,6 +61,7 @@ export default {
         this.$nextTick()
         .then(() => {
           this.parent = this.params.parentId;
+          this.parentOld = this.params.parentId;
         });
       }
 
@@ -69,6 +71,26 @@ export default {
 
       if (this.params.type) {
         this.operationType = this.params.type;
+      }
+    },
+    async removeFromChildrenList(parentId, childId) {
+      const res = await CategoriesService.getCategoryById(parentId);
+      const childrenArr = await res.data.children;
+
+      if (childId && childrenArr.includes(childId)) {
+        const newChildrenArr = childrenArr.filter(item => item !== childId);
+        console.log('newArr', newChildrenArr);
+
+        const parentParams = {
+          userid: this.userId,
+          _id: res.data._id,
+          name: res.data.name,
+          type: res.data.type,
+          parent: '',
+          children: newChildrenArr
+        };
+        const parentRes = await CategoriesService.updateCategory(parentParams);
+        console.log('NEW parentRes', parentRes);
       }
     },
     async setChildrenCategory(parentId, childId) {
@@ -87,6 +109,7 @@ export default {
           children: childrenArr
         };
         const parentRes = await CategoriesService.updateCategory(parentParams);
+        console.log('parentRes', parentRes)
       }
     },
     async submit() {
@@ -100,18 +123,48 @@ export default {
       };
 
       if (this.params && this.params.id) {
+        // console.log('id текущей категории', this.params.id);
+        // console.log('id старой родительской категории', this.parentOld);
+        // console.log('id новой родительской категории', this.parent);
         params._id = this.params.id;
-        CategoriesService.updateCategory(params)
-            .then(() => {
-              if (this.parent && this.params.id) {
-                this.setChildrenCategory(this.parent, this.params.id);
-                // 1. Удалять из предыдущей родительской
-                // 2. Ловить оба промиса и выдавать сообщение об успехе
-              }
-            })
-            .catch(err => {
-              console.log(err);
-            })
+
+        const u = await CategoriesService.updateCategory(params);
+
+        console.log('u', u);
+
+        if (this.parent && this.params.id) {
+          const promiseSet = await this.setChildrenCategory(this.parent, this.params.id);
+          const promiseRemove = await this.removeFromChildrenList(this.parentOld, this.params.id);
+
+          console.log('promiseSet', promiseSet);
+
+          Promise.all([promiseSet, promiseRemove])
+          .then(res => {
+            console.log('Выполнил все промисы', res);
+          });
+        }
+
+        // CategoriesService.updateCategory(params)
+        //     .then(() => {
+        //       if (this.parent && this.params.id) {
+        //         const promiseSet = this.setChildrenCategory(this.parent, this.params.id);
+        //         const promiseRemove = this.removeFromChildrenList(this.parentOld, this.params.id);
+        //
+        //         console.log('promiseSet', promiseSet);
+        //
+        //         Promise.all([promiseSet, promiseRemove])
+        //         .then(res => {
+        //           console.log('Выполнил все промисы', res);
+        //         });
+        //
+        //         // 1. [x] Удалять из предыдущей родительской
+        //         // 2. [ ] Ловить оба промиса и выдавать сообщение об успехе
+        //         // 3. [ ] При удалении категории, удалять ее из родителей
+        //       }
+        //     })
+        //     .catch(err => {
+        //       console.log(err);
+        //     })
       } else {
         CategoriesService.addNewCategory(params)
             .then(res => {
