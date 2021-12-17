@@ -74,50 +74,9 @@ export default {
         this.operationType = this.params.type;
       }
     },
-    async removeFromChildrenList(parentId, childId) {
-      if (parentId && childId) {
-        const res = await CategoriesService.getCategoryById(parentId);
-        const childrenArr = await res.data.children;
-
-        if (childrenArr.includes(childId)) {
-          const newChildrenArr = childrenArr.filter(item => item !== childId);
-
-          const parentParams = {
-            userid: this.userId,
-            _id: res.data._id,
-            name: res.data.name,
-            type: res.data.type,
-            parent: '',
-            children: newChildrenArr
-          };
-          const parentRes = await CategoriesService.updateCategory(parentParams);
-          console.log('removeFromChildrenList', parentRes);
-        }
-      }
-    },
-    async setChildrenCategory(parentId, childId) {
-      if (parentId && childId) {
-        const res = await CategoriesService.getCategoryById(parentId);
-        const childrenArr = await res.data.children;
-
-        if (!childrenArr.includes(childId)) {
-          childrenArr.push(childId);
-
-          const parentParams = {
-            userid: this.userId,
-            _id: res.data._id,
-            name: res.data.name,
-            type: res.data.type,
-            parent: '',
-            children: childrenArr
-          };
-          const parentRes = await CategoriesService.updateCategory(parentParams);
-          console.log('setChildrenCategory', parentRes)
-        }
-      }
-    },
     async submit() {
       this.userId = localStorage.getItem('userId');
+      const promiseArray = [];
 
       const params = {
         userid: this.userId,
@@ -127,69 +86,55 @@ export default {
       };
 
       if (this.params && this.params.id) {
-        // console.log('id текущей категории', this.params.id);
-        // console.log('id старой родительской категории', this.parentOld);
-        // console.log('id новой родительской категории', this.parent);
         params._id = this.params.id;
 
-        const u = await CategoriesService.updateCategory(params);
+        const promiseUpdate = await CategoriesService.updateCategory(params);
+        promiseArray.push(promiseUpdate);
 
-        console.log('u', u);
-        console.log('this.parent', this.parent);
-        console.log('this.params.id', this.params.id);
+        console.log('promiseUpdate', promiseUpdate);
 
         // this.params.id - id редактируемой категории
         if (this.parent && this.params.id) {
-          const promiseSet = await this.setChildrenCategory(this.parent, this.params.id);
-          // const promiseRemove = await this.removeFromChildrenList(this.parentOld, this.params.id);
-          const promiseRemove = await categoriesMethods.removeFromChildrenList(this.parentOld, this.params.id);
+          const promiseSetChildrenCategory = await categoriesMethods.setChildrenCategory(this.parent, this.params.id);
+          const promiseRemoveFromChildren = await categoriesMethods.removeFromChildrenList(this.parentOld, this.params.id);
 
-          console.log('promiseRemove', promiseRemove);
+          promiseArray.push(promiseSetChildrenCategory);
+          promiseArray.push(promiseRemoveFromChildren);
 
-          Promise.all([promiseSet, promiseRemove])
+          Promise.all(promiseArray)
           .then(res => {
             console.log('Выполнил все промисы', res);
           });
         } else if (!this.parent && this.params.id) {
           // Если у дочерней категории оставить пустым селект с родительской категорией
-          const promiseRemove = await this.removeFromChildrenList(this.parentOld, this.params.id);
+          const promiseRemove = await categoriesMethods.removeFromChildrenList(this.parentOld, this.params.id);
 
           console.log('promiseRemove', promiseRemove);
         }
 
-        // CategoriesService.updateCategory(params)
-        //     .then(() => {
-        //       if (this.parent && this.params.id) {
-        //         const promiseSet = this.setChildrenCategory(this.parent, this.params.id);
-        //         const promiseRemove = this.removeFromChildrenList(this.parentOld, this.params.id);
-        //
-        //         console.log('promiseSet', promiseSet);
-        //
-        //         Promise.all([promiseSet, promiseRemove])
-        //         .then(res => {
-        //           console.log('Выполнил все промисы', res);
-        //         });
-        //
-        //         // 1. [x] Удалять из предыдущей родительской
-        //         // 2. [ ] Ловить оба промиса и выдавать сообщение об успехе
-        //         // 3. [ ] При удалении категории, удалять ее из родителей
-        //         // 4. [x] При редактировании выбрать пустое поле, то удалять из родителя
-        //         // 5. [ ] Запретить удаление категории, если в ней есть дочерние
-        //       }
-        //     })
-        //     .catch(err => {
-        //       console.log(err);
-        //     })
+        // 1. [x] Удалять из предыдущей родительской
+        // 2. [x] Ловить оба промиса и выдавать сообщение об успехе
+        // 3. [ ] При удалении категории, удалять ее из родителей
+        // 4. [x] При редактировании выбрать пустое поле, то удалять из родителя
+        // 5. [ ] Запретить удаление категории, если в ней есть дочерние
       } else {
-        CategoriesService.addNewCategory(params)
-            .then(res => {
-              if (res.data._id && this.parent) {
-                this.setChildrenCategory(this.parent, res.data._id)
-              }
-            })
-            .catch(err => {
-              console.log(err);
-            })
+        try {
+          const promiseAddNew = await CategoriesService.addNewCategory(params);
+          const name = promiseAddNew.data.name;
+          promiseArray.push(promiseAddNew);
+
+          if (promiseAddNew.data._id && this.parent) {
+            const promiseSetChildrenCategory = await categoriesMethods.setChildrenCategory(this.parent, promiseAddNew.data._id);
+            promiseArray.push(promiseSetChildrenCategory);
+          }
+
+          Promise.all(promiseArray)
+          .then(res => {
+            console.log(`Новая категория ${name} создана`, res);
+          });
+        } catch (err) {
+          console.log('Ошибка при создании категории', err);
+        }
       }
     },
   },
