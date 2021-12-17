@@ -45,6 +45,7 @@ export default {
     categoryRemove(id) {
       this.removeCategory(id)
           .then(res => {
+            console.log('MainLayout: categoryRemove', res);
             this.getCategories().then((res) => {
               this.categoriesList = res.data;
             });

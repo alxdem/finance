@@ -4,6 +4,7 @@ import AppField from '@/components/form/AppField';
 import AppButton from '@/components/form/AppButton';
 import AppSelect from '@/components/form/AppSelect';
 import RadioSwitch from '@/components/form/RadioSwitch';
+import categoriesMethods from '@/utils/categoriesMethods';
 
 export default {
   name: 'form-category',
@@ -54,7 +55,7 @@ export default {
       this.operationType = value ? value : false;
     },
     categoryParentChange(newCategory) {
-      this.parent = newCategory;
+      this.parent = newCategory || '';
     },
     formParamsSet() {
       if (this.params.parentId) {
@@ -74,42 +75,45 @@ export default {
       }
     },
     async removeFromChildrenList(parentId, childId) {
-      const res = await CategoriesService.getCategoryById(parentId);
-      const childrenArr = await res.data.children;
+      if (parentId && childId) {
+        const res = await CategoriesService.getCategoryById(parentId);
+        const childrenArr = await res.data.children;
 
-      if (childId && childrenArr.includes(childId)) {
-        const newChildrenArr = childrenArr.filter(item => item !== childId);
-        console.log('newArr', newChildrenArr);
+        if (childrenArr.includes(childId)) {
+          const newChildrenArr = childrenArr.filter(item => item !== childId);
 
-        const parentParams = {
-          userid: this.userId,
-          _id: res.data._id,
-          name: res.data.name,
-          type: res.data.type,
-          parent: '',
-          children: newChildrenArr
-        };
-        const parentRes = await CategoriesService.updateCategory(parentParams);
-        console.log('NEW parentRes', parentRes);
+          const parentParams = {
+            userid: this.userId,
+            _id: res.data._id,
+            name: res.data.name,
+            type: res.data.type,
+            parent: '',
+            children: newChildrenArr
+          };
+          const parentRes = await CategoriesService.updateCategory(parentParams);
+          console.log('removeFromChildrenList', parentRes);
+        }
       }
     },
     async setChildrenCategory(parentId, childId) {
-      const res = await CategoriesService.getCategoryById(parentId);
-      const childrenArr = await res.data.children;
+      if (parentId && childId) {
+        const res = await CategoriesService.getCategoryById(parentId);
+        const childrenArr = await res.data.children;
 
-      if (childId && !childrenArr.includes(childId)) {
-        childrenArr.push(childId);
+        if (!childrenArr.includes(childId)) {
+          childrenArr.push(childId);
 
-        const parentParams = {
-          userid: this.userId,
-          _id: res.data._id,
-          name: res.data.name,
-          type: res.data.type,
-          parent: '',
-          children: childrenArr
-        };
-        const parentRes = await CategoriesService.updateCategory(parentParams);
-        console.log('parentRes', parentRes)
+          const parentParams = {
+            userid: this.userId,
+            _id: res.data._id,
+            name: res.data.name,
+            type: res.data.type,
+            parent: '',
+            children: childrenArr
+          };
+          const parentRes = await CategoriesService.updateCategory(parentParams);
+          console.log('setChildrenCategory', parentRes)
+        }
       }
     },
     async submit() {
@@ -119,7 +123,7 @@ export default {
         userid: this.userId,
         name: this.name,
         type: this.operationType,
-        parent: this.parent
+        parent: this.parent || ''
       };
 
       if (this.params && this.params.id) {
@@ -131,17 +135,26 @@ export default {
         const u = await CategoriesService.updateCategory(params);
 
         console.log('u', u);
+        console.log('this.parent', this.parent);
+        console.log('this.params.id', this.params.id);
 
+        // this.params.id - id редактируемой категории
         if (this.parent && this.params.id) {
           const promiseSet = await this.setChildrenCategory(this.parent, this.params.id);
-          const promiseRemove = await this.removeFromChildrenList(this.parentOld, this.params.id);
+          // const promiseRemove = await this.removeFromChildrenList(this.parentOld, this.params.id);
+          const promiseRemove = await categoriesMethods.removeFromChildrenList(this.parentOld, this.params.id);
 
-          console.log('promiseSet', promiseSet);
+          console.log('promiseRemove', promiseRemove);
 
           Promise.all([promiseSet, promiseRemove])
           .then(res => {
             console.log('Выполнил все промисы', res);
           });
+        } else if (!this.parent && this.params.id) {
+          // Если у дочерней категории оставить пустым селект с родительской категорией
+          const promiseRemove = await this.removeFromChildrenList(this.parentOld, this.params.id);
+
+          console.log('promiseRemove', promiseRemove);
         }
 
         // CategoriesService.updateCategory(params)
@@ -160,6 +173,8 @@ export default {
         //         // 1. [x] Удалять из предыдущей родительской
         //         // 2. [ ] Ловить оба промиса и выдавать сообщение об успехе
         //         // 3. [ ] При удалении категории, удалять ее из родителей
+        //         // 4. [x] При редактировании выбрать пустое поле, то удалять из родителя
+        //         // 5. [ ] Запретить удаление категории, если в ней есть дочерние
         //       }
         //     })
         //     .catch(err => {
