@@ -59,5 +59,51 @@ export default {
         console.log('setChildrenCategory', parentRes)
       }
     }
+  },
+
+  async removeCategory(id) {
+    if (!id) {
+      console.log('Id категории не получен');
+
+      return;
+    }
+
+    try {
+      const promiseCategory = await CategoriesService.getCategoryById(id);
+      const parentId = promiseCategory.data.parent || null;
+      let promiseRemoveFromChildren = null;
+
+      if (parentId) {
+        promiseRemoveFromChildren = await this.removeFromChildrenList(parentId, id);
+      }
+
+      const promiseRemove = await CategoriesService.removeCategory(id);
+      const promiseNewCategories = await CategoriesService.fetchCategories();
+
+      return await Promise.all([promiseRemove, promiseRemoveFromChildren, promiseNewCategories]);
+    } catch (err) {
+      console.log('Ошибка при удалении категории', err);
+    }
+  },
+
+  async addNewCategory(params, parentId) {
+    if (params.userid && params.name && params.type) {
+      console.log('Получены не все параметры');
+
+      return;
+    }
+
+    try {
+      let promiseSetChildrenCategory = null;
+      const promiseAddNew = await CategoriesService.addNewCategory(params);
+
+      if (promiseAddNew.data._id && parentId) {
+        promiseSetChildrenCategory = await this.setChildrenCategory(parentId, promiseAddNew.data._id);
+      }
+
+      return await Promise.all([promiseAddNew, promiseSetChildrenCategory]);
+    } catch (err) {
+      console.log('Ошибка при создании категории', err);
+    }
   }
 }

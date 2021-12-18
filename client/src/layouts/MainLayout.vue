@@ -1,10 +1,12 @@
 <script>
 import CategoriesService from '@/services/CategoriesService';
+import CategoriesMethods from '@/utils/categoriesMethods';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import Modal from "@/components/Modal";
 import FormOperation from '@/components/form/FormOperation';
 import FormCategory from '@/components/form/FormCategory';
+import FormConfirm from '@/components/form/FormConfirm';
 
 export default {
   name: 'main-layout',
@@ -13,7 +15,8 @@ export default {
     Header,
     Modal,
     FormOperation,
-    FormCategory
+    FormCategory,
+    FormConfirm
   },
   data() {
     return {
@@ -21,7 +24,9 @@ export default {
       isModalShow: false,
       currentFormComponent: 'FormOperation', // Меняю компонент, который открываю в модалке
       categoriesList: [], // Список категорий. Храню в верхнем компоненте, чтобы был доступ во всех дочерних,
-      modalParams: {}, // Прокидываю параметры для каждой модалки (форм)
+      modalParams: {}, // Прокидываю параметры для каждой модалки (форм),
+      modalText: '', // Текст для формы в модальном окне
+      modalTitle: '', // Заголовок для формы. Если нет - не показываю шапку модалки
     }
   },
   methods: {
@@ -31,10 +36,9 @@ export default {
     async removeCategory(id) {
       return await CategoriesService.removeCategory(id);
     },
-    modalOpen(modalName) {
-      if (modalName) {
-        this.currentFormComponent = modalName;
-      }
+    modalOpen(params) {
+      this.currentFormComponent = params.name ? params.name : 'FormOperation';
+      this.modalTitle = params.title ? params.title : '';
 
       this.isModalShow = true;
     },
@@ -42,22 +46,33 @@ export default {
       this.isModalShow = false;
       this.modalParams = {};
     },
-    categoryRemove(id) {
-      this.removeCategory(id)
-          .then(res => {
-            console.log('MainLayout: categoryRemove', res);
-            this.getCategories().then((res) => {
-              this.categoriesList = res.data;
-            });
-            console.log('--', res);
-          });
-    },
-    categoryEdit(info) {
-      if (info.modalName && info.params) {
-        this.currentFormComponent = info.modalName;
-        this.modalParams = info.params;
-        this.isModalShow = true;
+    async modalConfirm(params) {
+      // Если удаляем категорию и есть ее id
+      if (params.isCategoryRemove && params.categoryId) {
+        await CategoriesMethods.removeCategory(params.categoryId);
+        const promiseNewCategories = await this.getCategories();
+
+        this.categoriesList = promiseNewCategories.data;
+        this.modalClose();
       }
+    },
+    categoryRemoveModalOpen(id) {
+      // Здесь вызвать модалку с подтверждением удаления
+      this.modalText = 'Подтвердите удаление категории';
+      this.modalParams = {
+        categoryId: id,
+        isCategoryRemove: true
+      };
+      this.modalOpen({
+        name: 'FormConfirm',
+        title: ''
+      });
+    },
+    categoryEdit(params = {}) {
+      this.currentFormComponent = params.name ? params.name : 'FormOperation';
+      this.modalTitle = params.title ? params.title : '';
+      this.modalParams = params.params ? params.params : '';
+      this.isModalShow = true;
     }
   },
   created() {
@@ -83,19 +98,22 @@ export default {
       <router-view
           :categories="categoriesList"
           @modalOpen="modalOpen"
-          @removeCategory="categoryRemove"
+          @removeCategory="categoryRemoveModalOpen"
           @editCategory="categoryEdit"
       />
     </div>
     <Modal
         :is-open="isModalShow"
-        title="Заголовок модалки"
+        :title="modalTitle"
         @close="modalClose"
     >
       <component
           :is="currentFormComponent"
           :categories="categoriesList"
           :params="modalParams"
+          :text="modalText"
+          @close="modalClose"
+          @confirm="modalConfirm"
       ></component>
     </Modal>
   </div>

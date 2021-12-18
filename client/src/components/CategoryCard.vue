@@ -5,7 +5,8 @@ export default {
     title: String,
     type: Boolean,
     id: String,
-    parentId: String
+    parentId: String,
+    children: Array,
   },
   emits: {
     removeCard: null,
@@ -17,6 +18,9 @@ export default {
   computed: {
     typeSet() {
       return this.type ? 'Доходная' : 'Расходная';
+    },
+    isParent() {
+      return Boolean(this.children.length);
     }
   },
   methods: {
@@ -26,8 +30,9 @@ export default {
         title: this.title,
         type: this.type,
         parentId: this.parentId,
+        isParent: this.isParent
       });
-    }
+    },
   }
 }
 </script>
@@ -46,6 +51,7 @@ export default {
     >Редактировать</button>
 
     <button
+        v-if="!isParent"
         type="button"
         class="category-card__remove"
         @click="$emit('removeCard', id)"

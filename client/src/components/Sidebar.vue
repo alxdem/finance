@@ -123,7 +123,10 @@ export default {
   },
   methods: {
     addOperation() {
-      this.$emit('modalOpen', 'FormOperation');
+      this.$emit('modalOpen', {
+        name: 'FormOperation',
+        title: 'Добавить операцию'
+      });
     }
   }
 }

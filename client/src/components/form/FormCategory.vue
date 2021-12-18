@@ -4,7 +4,7 @@ import AppField from '@/components/form/AppField';
 import AppButton from '@/components/form/AppButton';
 import AppSelect from '@/components/form/AppSelect';
 import RadioSwitch from '@/components/form/RadioSwitch';
-import categoriesMethods from '@/utils/categoriesMethods';
+import CategoriesMethods from '@/utils/categoriesMethods';
 
 export default {
   name: 'form-category',
@@ -95,8 +95,8 @@ export default {
 
         // this.params.id - id редактируемой категории
         if (this.parent && this.params.id) {
-          const promiseSetChildrenCategory = await categoriesMethods.setChildrenCategory(this.parent, this.params.id);
-          const promiseRemoveFromChildren = await categoriesMethods.removeFromChildrenList(this.parentOld, this.params.id);
+          const promiseSetChildrenCategory = await CategoriesMethods.setChildrenCategory(this.parent, this.params.id);
+          const promiseRemoveFromChildren = await CategoriesMethods.removeFromChildrenList(this.parentOld, this.params.id);
 
           promiseArray.push(promiseSetChildrenCategory);
           promiseArray.push(promiseRemoveFromChildren);
@@ -107,31 +107,24 @@ export default {
           });
         } else if (!this.parent && this.params.id) {
           // Если у дочерней категории оставить пустым селект с родительской категорией
-          const promiseRemove = await categoriesMethods.removeFromChildrenList(this.parentOld, this.params.id);
+          const promiseRemove = await CategoriesMethods.removeFromChildrenList(this.parentOld, this.params.id);
 
           console.log('promiseRemove', promiseRemove);
         }
 
         // 1. [x] Удалять из предыдущей родительской
         // 2. [x] Ловить оба промиса и выдавать сообщение об успехе
-        // 3. [ ] При удалении категории, удалять ее из родителей
+        // 3. [x] При удалении категории, удалять ее из родителей
         // 4. [x] При редактировании выбрать пустое поле, то удалять из родителя
-        // 5. [ ] Запретить удаление категории, если в ней есть дочерние
+        // 5. [x] - Частично: сделать кнопку, но показывать уведомление о запрете. Запретить удаление категории, если в ней есть дочерние
+        // 6. [ ] Закрыть модалку и обновить список при создании категории
+        // 7. [ ] Закрыть модалку и обновить список при изменении категории
+        // 8. [ ] Если у категории есть дочерние, ее нельзя сделать дочерней
       } else {
         try {
-          const promiseAddNew = await CategoriesService.addNewCategory(params);
-          const name = promiseAddNew.data.name;
-          promiseArray.push(promiseAddNew);
+          const promiseAdd = await CategoriesMethods.addNewCategory(params, this.parent);
 
-          if (promiseAddNew.data._id && this.parent) {
-            const promiseSetChildrenCategory = await categoriesMethods.setChildrenCategory(this.parent, promiseAddNew.data._id);
-            promiseArray.push(promiseSetChildrenCategory);
-          }
-
-          Promise.all(promiseArray)
-          .then(res => {
-            console.log(`Новая категория ${name} создана`, res);
-          });
+          console.log(`Новая категория ${promiseAdd[0].data.name} создана`);
         } catch (err) {
           console.log('Ошибка при создании категории', err);
         }
@@ -179,6 +172,7 @@ export default {
     </div>
     <div class="form__row">
       <AppSelect
+          v-if="!this.params.isParent"
           text="Подкатегория для"
           :list="parentCategoriesSort"
           :model-value="parent"

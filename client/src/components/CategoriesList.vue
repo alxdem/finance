@@ -21,15 +21,19 @@ export default {
   },
   methods: {
     addCategory() {
-      this.$emit('modalOpen', 'FormCategory');
+      this.$emit('modalOpen', {
+        name: 'FormCategory',
+        title: 'Добавить категорию'
+      });
     },
     removeCategory(id) {
       this.$emit('removeCategory', id);
     },
-    editCategory(params) {
+    editCategory(formParams) {
       this.$emit('editCategory', {
-        modalName: 'FormCategory',
-        params
+        name: 'FormCategory',
+        title: 'Редактировать категорию',
+        params: formParams
       });
     },
     getChildrenCategory(array) {
@@ -68,17 +72,19 @@ export default {
             :type="category.type"
             :id="category._id"
             :parent-id="category.parent"
+            :children="category.children"
             @remove-card="removeCategory"
             @edit-card="editCategory"
         />
 
         <ul class="categories-list__children" v-if="category.children.length">
-          <li :key="child" v-for="child in getChildrenCategory(category.children)">
+          <li :key="child._id" v-for="child in getChildrenCategory(category.children)">
             <category-card
                 :title="child.name"
                 :type="child.type"
                 :id="child._id"
                 :parent-id="child.parent"
+                :children="child.children"
                 @remove-card="removeCategory"
                 @edit-card="editCategory"
             />

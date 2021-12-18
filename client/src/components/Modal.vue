@@ -33,7 +33,7 @@ export default {
 <template>
   <div v-if="isOpen" class="app-modal" @click="close">
     <div class="app-modal__wrapper" @click.stop>
-      <div class="app-modal__header">
+      <div v-if="title" class="app-modal__header">
         <div class="app-modal__title">{{title}}</div>
         <button
             class="app-modal__close"
@@ -42,11 +42,6 @@ export default {
       </div>
       <div class="app-modal__body">
         <slot>kyky</slot>
-      </div>
-      <div class="app-modal__footer">
-        <slot name="footer" :close="close">
-          Footer
-        </slot>
       </div>
     </div>
   </div>

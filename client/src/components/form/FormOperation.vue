@@ -1,51 +1,3 @@
-<template>
-  <form
-      class="form-operation form"
-      action="/"
-      @submit.prevent="submit"
-  >
-    <div class="form__row">
-      <AppField
-          id="value"
-          type="text"
-          text="Сумма"
-          v-model="operation.value"
-      />
-    </div>
-    <div class="form__row">
-      <AppField
-          id="date"
-          type="app-date"
-          text="Дата"
-          v-model="operation.date"
-          :value="operation.date"
-      />
-    </div>
-    <div class="form__row">
-      <AppSelect
-          :list="this.operationTypesList"
-          v-model="operation.operationType"
-      />
-    </div>
-    <div class="form__row">
-      <AppField
-          id="description"
-          text="Комментарий"
-          v-model="operation.description"
-      />
-    </div>
-
-    <AppButton
-      text="Сохранить"
-      type="submit"
-    />
-  </form>
-</template>
-
-<style lang="scss">
-
-</style>
-
 <script>
 import OperationsService from '@/services/OperationsService';
 import AppField from '@/components/form/AppField';
@@ -96,3 +48,51 @@ export default {
   }
 }
 </script>
+
+<template>
+  <form
+      class="form-operation form"
+      action="/"
+      @submit.prevent="submit"
+  >
+    <div class="form__row">
+      <AppField
+          id="value"
+          type="text"
+          text="Сумма"
+          v-model="operation.value"
+      />
+    </div>
+    <div class="form__row">
+      <AppField
+          id="date"
+          type="app-date"
+          text="Дата"
+          v-model="operation.date"
+          :value="operation.date"
+      />
+    </div>
+    <div class="form__row">
+      <AppSelect
+          :list="this.operationTypesList"
+          v-model="operation.operationType"
+      />
+    </div>
+    <div class="form__row">
+      <AppField
+          id="description"
+          text="Комментарий"
+          v-model="operation.description"
+      />
+    </div>
+
+    <AppButton
+        text="Сохранить"
+        type="submit"
+    />
+  </form>
+</template>
+
+<style lang="scss">
+
+</style>
